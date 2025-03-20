@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import GambarPNL from '../assets/pnl.png'
 
 import onlineEnablerMock from '../mock/onlineEnablerMock';
+import serviceMockData from '../mock/serviceMockData'
 
 const ProdukLayanan = () => {
   const [services, setServices] = useState([]);
@@ -13,14 +14,15 @@ const ProdukLayanan = () => {
     const fetchData = async () => {
       try {
         // Fetch services
-        const servicesResponse = await fetch('http://localhost:5000/api/service');
-        const servicesData = await servicesResponse.json();
+        // const servicesResponse = await fetch('http://localhost:5000/api/service');
+        // const servicesData = await servicesResponse.json();
         
         // Fetch online enablers
         // const enablersResponse = await fetch('http://localhost:5000/api/online-enabler');
         // const enablersData = await enablersResponse.json();
         
-        setServices(servicesData);
+        // setServices(servicesData);
+        setServices(serviceMockData);
         // setEnablers(enablersData);
         setEnablers(onlineEnablerMock);
         setLoading(false);
@@ -93,12 +95,13 @@ const ProdukLayanan = () => {
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6">
           {services.map((service) => (
             <div key={service.id} className="relative overflow-hidden rounded-lg shadow-sm">
-              <div className="bg-[#324F35] text-white p-2 text-center font-medium text-sm">
+              <div className="bg-[#324F35] text-white p-2 text-center font-normal text-xl">
                 {service.name}
               </div>
-              <div className="h-32 w-full overflow-hidden">
+              <div className="h-full w-full overflow-hidden">
                 <img 
-                  src={"http://localhost:5000"+service.image || "/api/placeholder/200/200"} 
+                  // src={"http://localhost:5000"+service.image || "/api/placeholder/200/200"} 
+                  src={service.image} 
                   alt={service.name}
                   className="w-full h-full object-cover"
                 />

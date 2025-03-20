@@ -3,6 +3,29 @@ import axios from 'axios';
 import FunctionalMaps from '../components/FunctionalMaps';
 
 
+const dummyLokOnline = [
+  {
+      "id": "8889ebdf-fb3c-4b86-8260-79755da95ff5",
+      "jaringan_type": "Klinik & Apotek",
+      "name": "Mitrasana Kelapa Gading",
+      "city": "Jakarta Utara",
+      "address": "JI. Raya Timur Boulevard Blok NC - I No 42 dan 43 RT001, RW012, Kel Pegangsaan Dua, Kec Kelapa Gading Jakarta Utara - 14250",
+      "phone": "0821 1070 6007",
+      "createdAt": "2025-03-09T13:52:59.328Z",
+      "updatedAt": "2025-03-09T13:52:59.328Z"
+  },
+  {
+      "id": "e79e0634-1344-4960-8c55-27c20eda8264",
+      "jaringan_type": "Klinik & Apotek",
+      "name": "Mitrasana Green Pramuka City",
+      "city": "Jakarta Pusat",
+      "address": "Apartemen Green Pramuka City, Tower Orchid, Lt. P1 Daerah perencanaan 2, JI. Ahmad Yani, RT014, RW009 Kel Rawasari, Kec Cempaka Putih, Jakarta Pusat - 10570",
+      "phone": "0822 9717 7100",
+      "createdAt": "2025-03-09T14:27:28.999Z",
+      "updatedAt": "2025-03-09T14:27:28.999Z"
+  }
+]
+
 
 const KlinikApotek = () => {
   const [locations, setLocations] = useState([]);
@@ -26,8 +49,9 @@ const KlinikApotek = () => {
     const fetchLocations = async () => {
       try {
         setLoading(true);
-        const response = await axios.get('http://localhost:5000/api/jaringan');
-        setLocations(response.data);
+        // const response = await axios.get('http://localhost:5000/api/jaringan');
+        // setLocations(response.data);
+        setLocations(dummyLokOnline)
         setLoading(false);
       } catch (err) {
         setError('Gagal memuat data jaringan. Silakan coba lagi nanti.');
