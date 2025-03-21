@@ -1,44 +1,76 @@
+/* Fixed Scale Layout - Add to index.css */
 @import "tailwindcss";
 
-
-/* Styling tambahan opsional */
-body {
-  @apply bg-gray-100 text-gray-900 ;
-}
-
-h1 {
-  @apply text-4xl font-bold;
-}
-
-/* button {
-  @apply bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition duration-300;
-} */
-
-.test-poppins {
-  font-family: "Poppins", sans-serif !important;
-}
-
-/* Semua <a> di luar sidebar tetap biru */
-/* a {
-  @apply text-blue-600;
-} */
-
-/* Semua <a> dalam sidebar berwarna putih */
-.sidebar a {
-  @apply text-white;
-}
-
-/* Warna default untuk link dalam navbar */
-.navbar-link {
-  @apply text-gray-800 hover:text-green-700;
-}
-
-.dropdown {
-  @apply text-[#707070] hover:text-[#324F35];
-}
-
-
-/* Pastikan link di dalam footer berwarna putih */
-footer a {
-  @apply text-white;
-}
+/* Main container scaling for consistent layout across screen sizes */
+.scale-container {
+    max-width: 1600px; /* Wider max-width to match 80% zoom view on 27" */
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+  
+  /* Adjust overall font sizes */
+  h1, h2, h3, h4, h5, h6 {
+    transform-origin: left;
+  }
+  
+  h1.scaled, .text-5xl.scaled {
+    font-size: calc(3rem * 1.25); /* Larger font size to simulate zoom out */
+  }
+  
+  h2.scaled, .text-4xl.scaled {
+    font-size: calc(2.25rem * 1.25);
+  }
+  
+  h3.scaled, .text-3xl.scaled {
+    font-size: calc(1.875rem * 1.25);
+  }
+  
+  h4.scaled, .text-2xl.scaled {
+    font-size: calc(1.5rem * 1.25);
+  }
+  
+  p.scaled, .text-xl.scaled {
+    font-size: calc(1.25rem * 1.25);
+  }
+  
+  /* Adjust container widths for individual sections */
+  .hero-container {
+    height: 90vh; /* Slightly less height to see more content */
+    overflow: hidden;
+  }
+  
+  .section-container {
+    width: 100%;
+    padding-left: 40px;
+    padding-right: 40px;
+  }
+  
+  /* Override some Tailwind defaults to fix horizontal overflow */
+  .overflow-x-auto {
+    overflow-x: hidden !important;
+  }
+  
+  /* Remove any fixed or absolute positioning that might cause overflow */
+  @media (max-width: 1400px) {
+    .scale-container {
+      max-width: 100%;
+      padding: 0 10px;
+    }
+    
+    .section-container {
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+  }
+  
+  /* Fix for Swiper carousels */
+  .swiper-container {
+    width: 100%;
+    overflow: hidden;
+  }
+  
+  /* Make sure SVGs scale properly */
+  svg {
+    max-width: 100%;
+  }
