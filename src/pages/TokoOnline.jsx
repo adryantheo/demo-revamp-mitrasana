@@ -24,62 +24,78 @@ const TokoOnline = () => {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 pt-12">
-        <h2 className="text-5xl text-[#324F35] font-semibold mb-2">Toko Online</h2>
-        
-        <div className="flex flex-col md:flex-row items-start mt-5 justify-between">
-          <div className="md:w-[100%]">
-            <p className="text-[#2E2E2E] font-normal text-2xl pt-4 mb-8">
-              Belanja produk kesehatan kini lebih praktis! Kunjungi toko online Mitrasana 
-              untuk mendapatkan obat, vitamin, dan kebutuhan kesehatan lainnya dengan 
-              mudah dan aman.
-            </p>
-            
-            {/* Marketplace Icons */}
-            <div className="flex items-center space-x-10 mt-6">
-              <a href="#" className="flex flex-col items-center">
-                <div className=" p-3 rounded-md">
-                  <img src={shopeeLogo} alt="Shopee" className="h-30 w-30" />
-                </div>
-                {/* <span className="mt-2 text-orange-500">Shopee</span> */}
-              </a>
-              
-              <a href="#" className="flex flex-col items-center">
-                <div className=" p-3 rounded-md">
-                  <img src={tokopediaLogo} alt="Tokopedia" className="h-30 w-30" />
-                </div>
-                {/* <span className="mt-2 text-green-600">Tokopedia</span> */}
-              </a>
-              
-              <a href="#" className="flex flex-col items-center">
-                <div className=" p-3 rounded-md">
-                  <img src={tiktokLogo} alt="TikTok Shop" className="h-30 w-30" />
-                </div>
-                {/* <span className="mt-2 text-black">TikTokShop</span> */}
-              </a>
-            </div>
-          </div>
+      <div className="max-w-7xl mx-auto px-4 pb-0">
+        {/* Container untuk judul dan teks - dengan padding top */}
+        <div className="pt-20">
+          <h2 className="text-5xl text-[#324F35] font-semibold mb-2">Toko Online</h2>
           
-          <div className="md:w-1/2 mt-8 md:mt-0 flex justify-end">
-            <div className="relative">
-              <div className="absolute z-0 left-8 top-9 bg-lime-400 rounded-full w-64 h-64"></div>
-              <div className="overflow-hidden relative">
+          <div className="flex flex-col md:flex-row items-start mt-5 justify-between">
+            <div className="md:w-[100%]">
+              <p className="text-[#2E2E2E] font-normal text-2xl pt-4 mb-8">
+                Belanja produk kesehatan kini lebih praktis! Kunjungi toko online Mitrasana 
+                untuk mendapatkan obat, vitamin, dan kebutuhan kesehatan lainnya dengan 
+                mudah dan aman.
+              </p>
+              
+              {/* Marketplace Icons */}
+              <div className="flex items-center space-x-10 mt-6">
+                <a href="#" className="flex flex-col items-center">
+                  <div className="p-3 rounded-md">
+                    <img src={shopeeLogo} alt="Shopee" className="h-30 w-30" />
+                  </div>
+                </a>
+                
+                <a href="#" className="flex flex-col items-center">
+                  <div className="p-3 rounded-md">
+                    <img src={tokopediaLogo} alt="Tokopedia" className="h-30 w-30" />
+                  </div>
+                </a>
+                
+                <a href="#" className="flex flex-col items-center">
+                  <div className="p-3 rounded-md">
+                    <img src={tiktokLogo} alt="TikTok Shop" className="h-30 w-30" />
+                  </div>
+                </a>
+              </div>
+            </div>
+            
+            {/* Penempatan gambar yang diperbaiki dengan struktur baru */}
+            <div className="md:w-1/2 mt-0 md:mt-0 flex justify-end relative overflow-visible">
+              {/* Wrapper untuk gambar dan lingkaran - mempertahankan posisi relatif yang tepat */}
+              <div className="relative" style={{ marginTop: '-2rem' }}>
+                {/* Lingkaran hijau diposisikan relatif terhadap wrapper, bukan terhadap div parent */}
+                <div 
+                  className="absolute z-0 rounded-full bg-lime-400" 
+                  style={{ 
+                    width: '280px', 
+                    height: '280px', 
+                    left: '-40px',  /* Posisi digeser ke kiri */
+                    top: '50%', 
+                    transform: 'translateY(-50%)'
+                  }}
+                ></div>
+                
+                {/* Gambar ponsel */}
                 <img 
-                    src={handlePhone} 
-                    alt="Woman holding smartphone showing Mitrasana app" 
-                    className="h-[50rem] w-auto relative -top-35 -right-10 z-10 transition-transform duration-300 hover:scale-105"
-                    style={{ 
-                        // marginTop: '-.5rem',  /* Memotong dari atas */
-                        marginBottom: '-17rem' /* Memotong dari bawah */
-                      }}
-                    // style={{ clipPath: 'inset(15% 0 0 0)' }}
-                    // className="h-auto w-96 relative -top-30 -right-20 z-10"
+                  src={handlePhone} 
+                  alt="Woman holding smartphone showing Mitrasana app" 
+                  className="phone-image relative z-10 transition-transform duration-300 hover:scale-105"
+                  style={{ 
+                    width: 'auto',
+                    maxHeight: '560px',
+                    height: 'auto',
+                    objectFit: 'contain',
+                    objectPosition: 'center'
+                  }}
                 />
               </div>
             </div>
           </div>
         </div>
       </div>
+      
+      {/* Jarak dari gambar ke footer */}
+      <div className="h-8"></div>
     </div>
   );
 };

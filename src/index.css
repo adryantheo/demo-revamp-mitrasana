@@ -1,7 +1,6 @@
-/* Fixed Scale Layout - Add to index.css */
 @import "tailwindcss";
 
-//* Responsive Scaling System for All Screen Sizes */
+/* Responsive Scaling System for All Screen Sizes */
 
 /* Base styles */
 :root {
@@ -136,64 +135,17 @@ img.responsive {
   height: auto;
 }
 
-/* Add this to your index.css or create a new CSS module for the TokoOnline component */
-
-/* Add this to your index.css or create a new CSS module for the TokoOnline component */
-
-/* Phone image container styles */
-.phone-image-container {
-  position: relative;
-  overflow: visible;
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-}
-
-/* Style for the lime circle background */
-.phone-image-container::before {
-  content: '';
-  position: absolute;
-  width: 15rem;
-  height: 15rem;
-  background-color: #a7cf46;
-  border-radius: 50%;
-  right: 4rem;
-  top: 4rem;
-  z-index: 0;
-}
-
-/* Phone image styles */
+/* Styling untuk gambar ponsel pada TokoOnline */
 .phone-image {
   position: relative;
   z-index: 10;
-  max-height: 500px;
-  width: auto;
-  object-fit: contain;
-  object-position: right center;
   transform-origin: center;
   transition: transform 0.3s ease-in-out;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
 }
 
 .phone-image:hover {
   transform: scale(1.05);
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .phone-image-container {
-    margin-top: 2rem;
-    justify-content: center;
-  }
-  
-  .phone-image-container::before {
-    right: auto;
-    left: 50%;
-    transform: translateX(-50%);
-  }
-  
-  .phone-image {
-    max-height: 400px;
-  }
 }
 
 /* Marketplace icons styling */
@@ -203,4 +155,34 @@ img.responsive {
 
 .marketplace-icon:hover {
   transform: translateY(-5px);
+}
+
+/* Media query untuk responsivitas */
+@media (max-width: 1024px) {
+  .phone-image {
+    max-height: 500px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .phone-image {
+    max-height: 450px !important;
+  }
+  
+  /* Posisi lingkaran pada tampilan mobile */
+  div[style*="left: -40px"] {
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    width: 220px !important;
+    height: 220px !important;
+  }
+}
+
+/* Fix untuk Safari yang terkadang memiliki masalah dengan margin negatif */
+@supports (-webkit-touch-callout: none) {
+  .phone-image {
+    margin-bottom: 0;
+    position: relative;
+    z-index: 10;
+  }
 }
