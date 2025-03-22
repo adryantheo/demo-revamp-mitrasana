@@ -67,7 +67,7 @@ const TokoOnline = () => {
                 <img 
                     src={handlePhone} 
                     alt="Woman holding smartphone showing Mitrasana app" 
-                    className="h-[50rem] w-auto relative -top-35 -right-10 z-10"
+                    className="h-[50rem] w-auto relative -top-35 -right-10 z-10 transition-transform duration-300 hover:scale-105"
                     style={{ 
                         // marginTop: '-.5rem',  /* Memotong dari atas */
                         marginBottom: '-17rem' /* Memotong dari bawah */

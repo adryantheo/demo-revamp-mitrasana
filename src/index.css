@@ -135,3 +135,72 @@ img.responsive {
   max-width: 100%;
   height: auto;
 }
+
+/* Add this to your index.css or create a new CSS module for the TokoOnline component */
+
+/* Add this to your index.css or create a new CSS module for the TokoOnline component */
+
+/* Phone image container styles */
+.phone-image-container {
+  position: relative;
+  overflow: visible;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+/* Style for the lime circle background */
+.phone-image-container::before {
+  content: '';
+  position: absolute;
+  width: 15rem;
+  height: 15rem;
+  background-color: #a7cf46;
+  border-radius: 50%;
+  right: 4rem;
+  top: 4rem;
+  z-index: 0;
+}
+
+/* Phone image styles */
+.phone-image {
+  position: relative;
+  z-index: 10;
+  max-height: 500px;
+  width: auto;
+  object-fit: contain;
+  object-position: right center;
+  transform-origin: center;
+  transition: transform 0.3s ease-in-out;
+}
+
+.phone-image:hover {
+  transform: scale(1.05);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .phone-image-container {
+    margin-top: 2rem;
+    justify-content: center;
+  }
+  
+  .phone-image-container::before {
+    right: auto;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  
+  .phone-image {
+    max-height: 400px;
+  }
+}
+
+/* Marketplace icons styling */
+.marketplace-icon {
+  transition: transform 0.2s ease;
+}
+
+.marketplace-icon:hover {
+  transform: translateY(-5px);
+}
