@@ -1,76 +1,137 @@
 /* Fixed Scale Layout - Add to index.css */
 @import "tailwindcss";
 
-/* Main container scaling for consistent layout across screen sizes */
+//* Responsive Scaling System for All Screen Sizes */
+
+/* Base styles */
+:root {
+  --font-scale: 1;
+  --element-scale: 1;
+  --container-width: 1400px;
+}
+
+/* Layout classes */
 .scale-container {
-    max-width: 1600px; /* Wider max-width to match 80% zoom view on 27" */
-    width: 100%;
-    margin: 0 auto;
-    padding: 0 20px;
+  width: 100%;
+  max-width: var(--container-width);
+  margin: 0 auto;
+  padding: 0 calc(1rem * var(--element-scale));
+}
+
+/* Mobile devices */
+@media (max-width: 767px) {
+  :root {
+    --font-scale: 0.8;
+    --element-scale: 0.9;
+    --container-width: 100%;
   }
-  
-  /* Adjust overall font sizes */
-  h1, h2, h3, h4, h5, h6 {
-    transform-origin: left;
+}
+
+/* Tablets */
+@media (min-width: 768px) and (max-width: 1279px) {
+  :root {
+    --font-scale: 0.9;
+    --element-scale: 0.95;
+    --container-width: 100%;
   }
-  
-  h1.scaled, .text-5xl.scaled {
-    font-size: calc(3rem * 1.25); /* Larger font size to simulate zoom out */
+}
+
+/* Standard desktops */
+@media (min-width: 1280px) and (max-width: 1919px) {
+  :root {
+    --font-scale: 1;
+    --element-scale: 1;
+    --container-width: 1400px;
   }
-  
-  h2.scaled, .text-4xl.scaled {
-    font-size: calc(2.25rem * 1.25);
+}
+
+/* High-resolution displays */
+@media (min-width: 1920px), 
+       (min-width: 1440px) and (min-resolution: 1.5dppx) {
+  :root {
+    --font-scale: 1.15;
+    --element-scale: 1.1;
+    --container-width: 1600px;
   }
-  
-  h3.scaled, .text-3xl.scaled {
-    font-size: calc(1.875rem * 1.25);
+}
+
+/* Very high-resolution displays (4K and up) */
+@media (min-width: 2560px), 
+       (min-width: 1920px) and (min-resolution: 2dppx) {
+  :root {
+    --font-scale: 1.25;
+    --element-scale: 1.2;
+    --container-width: 1800px;
   }
-  
-  h4.scaled, .text-2xl.scaled {
-    font-size: calc(1.5rem * 1.25);
-  }
-  
-  p.scaled, .text-xl.scaled {
-    font-size: calc(1.25rem * 1.25);
-  }
-  
-  /* Adjust container widths for individual sections */
-  .hero-container {
-    height: 90vh; /* Slightly less height to see more content */
-    overflow: hidden;
-  }
-  
-  .section-container {
-    width: 100%;
-    padding-left: 40px;
-    padding-right: 40px;
-  }
-  
-  /* Override some Tailwind defaults to fix horizontal overflow */
-  .overflow-x-auto {
-    overflow-x: hidden !important;
-  }
-  
-  /* Remove any fixed or absolute positioning that might cause overflow */
-  @media (max-width: 1400px) {
-    .scale-container {
-      max-width: 100%;
-      padding: 0 10px;
-    }
-    
-    .section-container {
-      padding-left: 20px;
-      padding-right: 20px;
-    }
-  }
-  
-  /* Fix for Swiper carousels */
-  .swiper-container {
-    width: 100%;
-    overflow: hidden;
-  }
-  
-  /* Make sure SVGs scale properly */
-  svg {
-    max-width: 100%;
-  }
+}
+
+/* Make sure container width never exceeds viewport */
+.scale-container {
+  max-width: min(var(--container-width), 95vw);
+}
+
+/* Override Tailwind text classes with scaled versions */
+.text-xs { font-size: calc(0.75rem * var(--font-scale)); }
+.text-sm { font-size: calc(0.875rem * var(--font-scale)); }
+.text-base { font-size: calc(1rem * var(--font-scale)); }
+.text-lg { font-size: calc(1.125rem * var(--font-scale)); }
+.text-xl { font-size: calc(1.25rem * var(--font-scale)); }
+.text-2xl { font-size: calc(1.5rem * var(--font-scale)); }
+.text-3xl { font-size: calc(1.875rem * var(--font-scale)); }
+.text-4xl { font-size: calc(2.25rem * var(--font-scale)); }
+.text-5xl { font-size: calc(3rem * var(--font-scale)); }
+.text-6xl { font-size: calc(3.75rem * var(--font-scale)); }
+.text-7xl { font-size: calc(4.5rem * var(--font-scale)); }
+.text-8xl { font-size: calc(6rem * var(--font-scale)); }
+.text-9xl { font-size: calc(8rem * var(--font-scale)); }
+
+/* Scale spacing utilities */
+.p-1, .px-1, .pl-1, .pr-1 { padding-left: calc(0.25rem * var(--element-scale)); padding-right: calc(0.25rem * var(--element-scale)); }
+.p-2, .px-2, .pl-2, .pr-2 { padding-left: calc(0.5rem * var(--element-scale)); padding-right: calc(0.5rem * var(--element-scale)); }
+.p-3, .px-3, .pl-3, .pr-3 { padding-left: calc(0.75rem * var(--element-scale)); padding-right: calc(0.75rem * var(--element-scale)); }
+.p-4, .px-4, .pl-4, .pr-4 { padding-left: calc(1rem * var(--element-scale)); padding-right: calc(1rem * var(--element-scale)); }
+.p-6, .px-6, .pl-6, .pr-6 { padding-left: calc(1.5rem * var(--element-scale)); padding-right: calc(1.5rem * var(--element-scale)); }
+.p-8, .px-8, .pl-8, .pr-8 { padding-left: calc(2rem * var(--element-scale)); padding-right: calc(2rem * var(--element-scale)); }
+.p-12, .px-12, .pl-12, .pr-12 { padding-left: calc(3rem * var(--element-scale)); padding-right: calc(3rem * var(--element-scale)); }
+
+.p-1, .py-1, .pt-1, .pb-1 { padding-top: calc(0.25rem * var(--element-scale)); padding-bottom: calc(0.25rem * var(--element-scale)); }
+.p-2, .py-2, .pt-2, .pb-2 { padding-top: calc(0.5rem * var(--element-scale)); padding-bottom: calc(0.5rem * var(--element-scale)); }
+.p-3, .py-3, .pt-3, .pb-3 { padding-top: calc(0.75rem * var(--element-scale)); padding-bottom: calc(0.75rem * var(--element-scale)); }
+.p-4, .py-4, .pt-4, .pb-4 { padding-top: calc(1rem * var(--element-scale)); padding-bottom: calc(1rem * var(--element-scale)); }
+.p-6, .py-6, .pt-6, .pb-6 { padding-top: calc(1.5rem * var(--element-scale)); padding-bottom: calc(1.5rem * var(--element-scale)); }
+.p-8, .py-8, .pt-8, .pb-8 { padding-top: calc(2rem * var(--element-scale)); padding-bottom: calc(2rem * var(--element-scale)); }
+.p-12, .py-12, .pt-12, .pb-12 { padding-top: calc(3rem * var(--element-scale)); padding-bottom: calc(3rem * var(--element-scale)); }
+
+/* Fix specific component scaling */
+.navbar-logo {
+  height: calc(80px * var(--element-scale));
+}
+
+.hero-container {
+  min-height: calc(100vh * 0.8);
+}
+
+/* Card elements scale well on large screens */
+.card {
+  border-radius: calc(0.5rem * var(--element-scale));
+  box-shadow: 0 calc(4px * var(--element-scale)) calc(6px * var(--element-scale)) rgba(0, 0, 0, 0.1);
+}
+
+/* Ensure SVG components scale properly on high resolution displays */
+svg.scalable {
+  transform: scale(var(--element-scale));
+  transform-origin: center;
+}
+
+/* Utility class for buttons that should scale with screen size */
+.btn-scale {
+  padding: calc(0.5rem * var(--element-scale)) calc(1rem * var(--element-scale));
+  border-radius: calc(0.375rem * var(--element-scale));
+  font-size: calc(1rem * var(--font-scale));
+}
+
+/* Make images automatically adjust to container sizes */
+img.responsive {
+  max-width: 100%;
+  height: auto;
+}

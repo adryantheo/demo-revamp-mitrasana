@@ -3,29 +3,48 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <!-- Modified viewport meta tag for better scaling -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+    <!-- Improved viewport meta tag for better scaling across devices -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <title>Mitrasana - Apotek dan Klinik</title>
     <style>
-      /* Force wider layout for desktop screens */
-      @media (min-width: 1280px) {
-        body {
-          font-size: 16px; /* Base font size */
-          max-width: 100%;
-          overflow-x: hidden;
+      /* Base styles to ensure proper scaling */
+      :root {
+        --base-font-size: 16px;
+      }
+      
+      /* Set base font-size */
+      html {
+        font-size: var(--base-font-size);
+      }
+      
+      /* High resolution display scaling */
+      @media (min-width: 1921px), 
+             (min-width: 1441px) and (min-resolution: 1.5dppx) {
+        :root {
+          --base-font-size: 18px;
         }
         
-        .container {
-          max-width: 1440px !important; /* Override Tailwind container */
-          margin-left: auto;
-          margin-right: auto;
+        body {
+          zoom: 1.1; /* Fallback for browsers that don't support CSS variables */
         }
       }
       
-      /* Ensure body uses full width */
+      /* Very high resolution displays (4K+) */
+      @media (min-width: 2561px), 
+             (min-width: 1921px) and (min-resolution: 2dppx) {
+        :root {
+          --base-font-size: 20px;
+        }
+        
+        body {
+          zoom: 1.2; /* Fallback for browsers that don't support CSS variables */
+        }
+      }
+      
+      /* Ensure body uses full width and proper font */
       html, body {
         width: 100%;
         overflow-x: hidden;
@@ -33,6 +52,23 @@
       
       body {
         font-family: "Poppins", sans-serif !important;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+      
+      /* Force content to stay within viewport bounds */
+      #root {
+        max-width: 100vw;
+        overflow-x: hidden;
+      }
+      
+      /* High-res class applied via JavaScript */
+      html.high-res .container {
+        max-width: 1600px !important;
+      }
+      
+      html.very-high-res .container {
+        max-width: 1800px !important;
       }
     </style>
   </head>
