@@ -3,10 +3,9 @@ import React, { useState, useEffect, useRef } from "react";
 const FunctionalMaps = ({ locations }) => {
   const [svgContent, setSvgContent] = useState(null);
   const [isMobile, setIsMobile] = useState(false);
-  const [hoveredLocation, setHoveredLocation] = useState(null);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [selectedLocation, setSelectedLocation] = useState(null);
+  const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
   const svgContainerRef = useRef(null);
-  const lastMouseMoveTime = useRef(Date.now());
 
   // Detect mobile view
   useEffect(() => {
@@ -32,7 +31,7 @@ const FunctionalMaps = ({ locations }) => {
       });
   }, []);
 
-  // Process SVG and add tooltips after the content is loaded
+  // Process SVG after content is loaded
   useEffect(() => {
     if (!svgContainerRef.current || !svgContent) return;
     
@@ -52,111 +51,93 @@ const FunctionalMaps = ({ locations }) => {
     svgElement.style.maxWidth = '100%';
     svgElement.style.maxHeight = isMobile ? '50vh' : '70vh';
     
+    // Prevent any transformations
+    svgElement.style.transform = 'none';
+    svgElement.style.transition = 'none';
+    
+    // Add click handler to the background to close any selected location
+    svgElement.onclick = (e) => {
+      // Only close if clicking directly on the SVG, not on markers
+      if (e.target === svgElement) {
+        setSelectedLocation(null);
+      }
+    };
+    
     // Process each location marker
     locations.forEach(loc => {
       const marker = svgElement.getElementById(loc.id);
       if (marker) {
-        // Ensure the marker and all its children have pointer events enabled
-        enablePointerEvents(marker);
-        
-        // Add data attributes to the marker
-        marker.setAttribute('data-name', loc.name);
-        marker.setAttribute('data-location-id', loc.id);
-        
-        // Only add event listeners on desktop
-        if (!isMobile) {
-          marker.addEventListener('mouseenter', handleMarkerHover);
-          marker.addEventListener('mouseleave', handleMarkerLeave);
-        }
-        
-        // Enhance visibility on all devices
+        // Apply styles to the marker
         marker.style.fill = "#324F35";
         marker.style.fillOpacity = "0.9";
         marker.style.stroke = "#ffffff";
         marker.style.strokeWidth = "1";
+        marker.style.cursor = "pointer";
         
         // Make markers slightly larger on mobile for better touch targets
         if (isMobile) {
           marker.style.transform = "scale(1.2)";
           marker.style.transformOrigin = "center";
         }
+        
+        // Add click event listener
+        marker.onclick = (e) => {
+          e.stopPropagation();
+          
+          // Calculate marker position relative to the container
+          const markerRect = marker.getBoundingClientRect();
+          const containerRect = svgContainerRef.current.getBoundingClientRect();
+          
+          // Get center point of marker
+          const markerCenterX = markerRect.left + (markerRect.width / 2);
+          const markerCenterY = markerRect.top + (markerRect.height / 2);
+          
+          // Calculate position relative to container
+          const relativeX = markerCenterX - containerRect.left;
+          const relativeY = markerCenterY - containerRect.top;
+          
+          if (selectedLocation && selectedLocation.id === loc.id) {
+            // Toggle off if already selected
+            setSelectedLocation(null);
+          } else {
+            // Select this location and set tooltip position
+            setSelectedLocation(loc);
+            setTooltipPosition({ x: relativeX, y: relativeY });
+          }
+        };
+        
+        // Apply a hover effect without disturbing the tooltip
+        marker.onmouseenter = () => {
+          marker.style.fillOpacity = "1";
+        };
+        
+        marker.onmouseleave = () => {
+          marker.style.fillOpacity = "0.9";
+        };
       }
     });
     
-    // Recursive function to enable pointer events on an element and all its children
-    function enablePointerEvents(element) {
-      element.style.pointerEvents = 'auto';
-      element.style.cursor = 'pointer';
-      Array.from(element.children).forEach(child => enablePointerEvents(child));
-    }
-    
-    // Handle marker hover (desktop only)
-    function handleMarkerHover(e) {
-      if (isMobile) return;
-      
-      const name = e.currentTarget.getAttribute('data-name');
-      setHoveredLocation(name);
-      setMousePosition({ x: e.clientX, y: e.clientY });
-      lastMouseMoveTime.current = Date.now();
-      
-      // Update tooltip on mouse move
-      document.addEventListener('mousemove', handleMouseMove);
-    }
-    
-    function handleMarkerLeave() {
-      if (isMobile) return;
-      
-      setHoveredLocation(null);
-      document.removeEventListener('mousemove', handleMouseMove);
-    }
-    
-    function handleMouseMove(e) {
-      if (isMobile) return;
-      
-      setMousePosition({ x: e.clientX, y: e.clientY });
-      lastMouseMoveTime.current = Date.now();
-    }
-    
-    const handleGlobalMouseMove = () => {
-      if (hoveredLocation && !isMobile) {
-        const timeSinceLastMove = Date.now() - lastMouseMoveTime.current;
-        if (timeSinceLastMove > 300) {
-          setHoveredLocation(null);
-        }
+    // Handle clicks outside the map to close tooltip
+    const handleDocumentClick = (e) => {
+      if (!svgContainerRef.current.contains(e.target)) {
+        setSelectedLocation(null);
       }
     };
-
-    const handleScroll = () => {
-      setHoveredLocation(null);
-    };
     
-    // Add global event listeners
-    document.addEventListener("mousemove", handleGlobalMouseMove);
-    window.addEventListener("scroll", handleScroll);
+    document.addEventListener('click', handleDocumentClick);
     
-    // Clean up on unmount
     return () => {
-      locations.forEach(loc => {
-        const marker = svgElement.getElementById(loc.id);
-        if (marker) {
-          marker.removeEventListener('mouseenter', handleMarkerHover);
-          marker.removeEventListener('mouseleave', handleMarkerLeave);
-        }
-      });
-      
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener("mousemove", handleGlobalMouseMove);
-      window.addEventListener("scroll", handleScroll);
+      document.removeEventListener('click', handleDocumentClick);
     };
-  }, [svgContent, locations, isMobile, hoveredLocation]);
+  }, [svgContent, locations, isMobile, selectedLocation]);
 
   return (
-    <div className="w-full bg-[#dcfbff] rounded-lg shadow-lg object-cover z-20 svg-map-container">
-      <div className="relative flex justify-center map-container" ref={svgContainerRef}>
+    <div className="w-full bg-[#dcfbff] rounded-lg shadow-lg object-cover z-20">
+      <div className="relative flex justify-center" ref={svgContainerRef}>
         {svgContent ? (
           <div 
             className="w-full" 
-            dangerouslySetInnerHTML={{ __html: svgContent }}
+            dangerouslySetInnerHTML={{ __html: svgContent }} 
           />
         ) : (
           <div className="w-full h-48 md:h-64 lg:h-80 flex items-center justify-center">
@@ -164,22 +145,78 @@ const FunctionalMaps = ({ locations }) => {
           </div>
         )}
         
-        {/* Tooltip - Only show on desktop */}
-        {hoveredLocation && !isMobile && (
-          <div
-            className="absolute bg-white text-gray-800 px-3 py-2 text-sm md:text-base font-medium rounded-md shadow-lg z-50 border border-gray-300"
+        {/* Selected Location Info - Styled like Jaringan.jsx */}
+        {selectedLocation && (
+          <div 
+            className="absolute bg-white text-gray-800 rounded-xl shadow-lg z-50 border border-gray-300"
             style={{
-              left: `${mousePosition.x}px`,
-              top: `${mousePosition.y - 40}px`,
-              transform: "translate(-50%, -100%)",
-              pointerEvents: "none",
-              position: "fixed",
+              left: `${tooltipPosition.x}px`,
+              top: `${tooltipPosition.y - 40}px`, // Position above the marker
+              transform: 'translate(-50%, -100%)', // Center horizontally and position above
+              padding: '0.5rem 0.75rem',
             }}
           >
-            {hoveredLocation}
+            <div className="flex items-center justify-between">
+              <span className="text-sm md:text-lg font-bold">{selectedLocation.name}</span>
+              <button 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setSelectedLocation(null);
+                }}
+                className="ml-4 text-gray-500 hover:text-gray-700"
+              >
+                ✕
+              </button>
+            </div>
+            {/* Arrow pointing to the marker */}
+            <div
+              className="absolute w-3 h-3 bg-white transform rotate-45 border-r border-b border-gray-300"
+              style={{
+                bottom: '-6px',
+                left: '50%',
+                marginLeft: '-6px',
+              }}
+            ></div>
           </div>
         )}
       </div>
+      
+      {/* Mobile location labels */}
+      {isMobile && (
+        <div className="grid grid-cols-2 gap-2 w-full mx-auto mt-4 px-2">
+          {locations.map((location) => (
+            <div 
+              key={location.id} 
+              className={`py-2 px-3 rounded-md text-center border transition-colors ${
+                selectedLocation && selectedLocation.id === location.id 
+                  ? 'bg-[#324F35] text-white border-[#324F35]' 
+                  : 'border-gray-300 bg-white text-gray-800 hover:bg-gray-100'
+              }`}
+              onClick={() => {
+                if (selectedLocation && selectedLocation.id === location.id) {
+                  setSelectedLocation(null);
+                } else {
+                  // For mobile, we need to find the marker to calculate position
+                  const svgElement = svgContainerRef.current.querySelector("svg");
+                  if (svgElement) {
+                    const marker = svgElement.getElementById(location.id);
+                    if (marker) {
+                      const markerRect = marker.getBoundingClientRect();
+                      const containerRect = svgContainerRef.current.getBoundingClientRect();
+                      const relativeX = (markerRect.left + markerRect.width/2) - containerRect.left;
+                      const relativeY = (markerRect.top + markerRect.height/2) - containerRect.top;
+                      setTooltipPosition({ x: relativeX, y: relativeY });
+                    }
+                  }
+                  setSelectedLocation(location);
+                }
+              }}
+            >
+              {location.name}
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

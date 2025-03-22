@@ -44,7 +44,8 @@ const Jaringan = () => {
   }, []);
 
   useEffect(() => {
-    if (!svgContainerRef.current) return;
+    if (!svgContainerRef.current || !svgContent) return;
+    
     const svgElement = svgContainerRef.current.querySelector("svg");
     if (!svgElement) return;
     
@@ -55,82 +56,61 @@ const Jaringan = () => {
       svgElement.setAttribute('viewBox', `0 0 ${width} ${height}`);
     }
     
-    // Set the SVG to be responsive
+    // Set the SVG to be responsive but prevent transformations during hover
     svgElement.setAttribute('width', '100%');
     svgElement.setAttribute('height', 'auto');
     svgElement.style.maxWidth = '100%';
+    svgElement.style.transform = 'none'; // Prevent transformations
+    svgElement.style.transition = 'none'; // Disable transitions
     
-    const handleMouseEnter = (loc, event) => {
-      if (isMobile) return; // Disable tooltips on mobile
-      setHoveredLocation(loc);
-      setMousePosition({ x: event.clientX, y: event.clientY });
-    };
-
-    const handleMouseMove = (event) => {
-      if (isMobile) return;
-      setMousePosition({ x: event.clientX, y: event.clientY });
-      lastMouseMoveTime.current = Date.now();
-    };
-
-    const handleMouseLeave = () => {
-      setHoveredLocation(null);
-    };
-
-    const setupMarkerEventListeners = () => {
-      cleanupMarkerEventListeners();
+    // Process markers and add event listeners
+    const setupMarkers = () => {
       locations.forEach((loc) => {
         const marker = svgElement.getElementById(loc.id);
         if (marker) {
+          // Apply styles to the marker but not to the SVG container
           marker.style.cursor = "pointer";
           marker.dataset.locationId = loc.id;
-          marker.addEventListener("mouseenter", handleMarkerMouseEnter);
-          marker.addEventListener("mousemove", handleMarkerMouseMove);
-          marker.addEventListener("mouseleave", handleMarkerMouseLeave);
+          marker.style.pointerEvents = "all"; // Ensure marker receives events
           
           // Make sure all marker elements are visible
           marker.style.display = "block";
           
-          // Highlight the marker for better visibility on small screens
-          if (isMobile) {
-            marker.style.fill = "#324F35";
-            marker.style.fillOpacity = "0.9";
-            marker.style.stroke = "#ffffff";
-            marker.style.strokeWidth = "1";
-          }
+          // Highlight the marker for better visibility
+          marker.style.fill = "#324F35";
+          marker.style.fillOpacity = "0.9";
+          marker.style.stroke = "#ffffff";
+          marker.style.strokeWidth = "1";
+          
+          // Apply event listeners directly to markers
+          marker.addEventListener("mouseenter", (event) => {
+            event.stopPropagation(); // Prevent event bubbling
+            const locationId = marker.dataset.locationId;
+            const location = locations.find(loc => loc.id === locationId);
+            if (location) {
+              setHoveredLocation(location);
+              setMousePosition({ x: event.clientX, y: event.clientY });
+              lastMouseMoveTime.current = Date.now();
+            }
+          });
+          
+          marker.addEventListener("mousemove", (event) => {
+            event.stopPropagation(); // Prevent event bubbling
+            setMousePosition({ x: event.clientX, y: event.clientY });
+            lastMouseMoveTime.current = Date.now();
+          });
+          
+          marker.addEventListener("mouseleave", () => {
+            setHoveredLocation(null);
+          });
         }
       });
     };
 
-    const handleMarkerMouseEnter = (event) => {
-      const marker = event.target;
-      const locationId = marker.dataset.locationId;
-      const location = locations.find(loc => loc.id === locationId);
-      if (location) {
-        handleMouseEnter(location, event);
-      }
-    };
-
-    const handleMarkerMouseMove = (event) => {
-      handleMouseMove(event);
-    };
-
-    const handleMarkerMouseLeave = () => {
-      handleMouseLeave();
-    };
-
-    const cleanupMarkerEventListeners = () => {
-      locations.forEach((loc) => {
-        const marker = svgElement.getElementById(loc.id);
-        if (marker) {
-          marker.removeEventListener("mouseenter", handleMarkerMouseEnter);
-          marker.removeEventListener("mousemove", handleMarkerMouseMove);
-          marker.removeEventListener("mouseleave", handleMarkerMouseLeave);
-        }
-      });
-    };
+    setupMarkers();
 
     const handleGlobalMouseMove = () => {
-      if (hoveredLocation) {
+      if (hoveredLocation && !isMobile) {
         const timeSinceLastMove = Date.now() - lastMouseMoveTime.current;
         if (timeSinceLastMove > 300) {
           setHoveredLocation(null);
@@ -142,12 +122,20 @@ const Jaringan = () => {
       setHoveredLocation(null);
     };
 
-    setupMarkerEventListeners();
     document.addEventListener("mousemove", handleGlobalMouseMove);
     window.addEventListener("scroll", handleScroll);
 
     return () => {
-      cleanupMarkerEventListeners();
+      // Clean up event listeners
+      locations.forEach((loc) => {
+        const marker = svgElement.getElementById(loc.id);
+        if (marker) {
+          marker.removeEventListener("mouseenter", () => {});
+          marker.removeEventListener("mousemove", () => {});
+          marker.removeEventListener("mouseleave", () => {});
+        }
+      });
+      
       document.removeEventListener("mousemove", handleGlobalMouseMove);
       window.removeEventListener("scroll", handleScroll);
     };
@@ -162,13 +150,18 @@ const Jaringan = () => {
         </p>
       </div>
 
-      {/* Map container with scaling for different screen sizes */}
+      {/* Map container with improved event handling */}
       <div className="relative flex justify-center mt-4 md:mt-8">
-        <div className="w-full max-w-screen-lg mx-auto px-2 sm:px-4 md:px-6" ref={svgContainerRef}>
+        <div 
+          className="w-full max-w-screen-lg mx-auto px-2 sm:px-4 md:px-6" 
+          ref={svgContainerRef}
+          style={{ touchAction: "pan-y", pointerEvents: "auto" }}
+        >
           {svgContent ? (
             <div 
-              className="w-full overflow-hidden"
-              dangerouslySetInnerHTML={{ __html: svgContent }} 
+              className="w-full overflow-hidden svg-map-container"
+              dangerouslySetInnerHTML={{ __html: svgContent }}
+              style={{ transform: "none", transition: "none" }}
             />
           ) : (
             <div className="w-full h-48 md:h-64 lg:h-80 flex items-center justify-center bg-gray-100 rounded-lg">
@@ -188,15 +181,14 @@ const Jaringan = () => {
           )}
         </div>
 
+        {/* Tooltip with fixed position relative to cursor */}
         {hoveredLocation && !isMobile && (
           <div
-            className="absolute bg-white text-gray-800 px-3 py-2 text-sm md:text-lg font-bold rounded-xl shadow-lg z-50 border border-gray-300"
+            className="fixed bg-white text-gray-800 px-3 py-2 text-sm md:text-lg font-bold rounded-xl shadow-lg z-50 border border-gray-300 pointer-events-none"
             style={{
               left: `${mousePosition.x}px`,
-              top: `${mousePosition.y}px`,
-              transform: "translate(-50%, -120%)",
-              pointerEvents: "none",
-              position: "fixed",
+              top: `${mousePosition.y - 40}px`,
+              transform: "translate(-50%, -100%)"
             }}
           >
             {hoveredLocation.name}
