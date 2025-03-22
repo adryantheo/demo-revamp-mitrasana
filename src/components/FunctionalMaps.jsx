@@ -63,10 +63,13 @@ const FunctionalMaps = ({ locations }) => {
       }
     };
     
-    // Process each location marker
+    // Process each location marker - now for both mobile and desktop
     locations.forEach(loc => {
       const marker = svgElement.getElementById(loc.id);
       if (marker) {
+        // Always show pins, even on mobile
+        marker.style.display = "block";
+        
         // Apply styles to the marker
         marker.style.fill = "#324F35";
         marker.style.fillOpacity = "0.9";
@@ -74,13 +77,14 @@ const FunctionalMaps = ({ locations }) => {
         marker.style.strokeWidth = "1";
         marker.style.cursor = "pointer";
         
-        // Make markers slightly larger on mobile for better touch targets
+        // Make markers more visible on mobile without removing them
         if (isMobile) {
-          marker.style.transform = "scale(1.2)";
+          marker.style.transform = "scale(1.5)"; // Larger scale for better visibility on mobile
           marker.style.transformOrigin = "center";
+          marker.style.strokeWidth = "1.5"; // Thicker stroke for better visibility
         }
         
-        // Add click event listener
+        // Add click event listener for both mobile and desktop
         marker.onclick = (e) => {
           e.stopPropagation();
           
@@ -114,6 +118,23 @@ const FunctionalMaps = ({ locations }) => {
         marker.onmouseleave = () => {
           marker.style.fillOpacity = "0.9";
         };
+        
+        // Add touch-specific handling for mobile
+        if (isMobile) {
+          marker.ontouchstart = (e) => {
+            e.stopPropagation();
+            marker.style.fillOpacity = "1";
+          };
+          
+          marker.ontouchend = (e) => {
+            e.stopPropagation();
+            marker.style.fillOpacity = "0.9";
+            
+            // Trigger click event on touch end
+            const touchEndEvent = new Event('click', { bubbles: true });
+            marker.dispatchEvent(touchEndEvent);
+          };
+        }
       }
     });
     
@@ -180,43 +201,6 @@ const FunctionalMaps = ({ locations }) => {
           </div>
         )}
       </div>
-      
-      {/* Mobile location labels */}
-      {isMobile && (
-        <div className="grid grid-cols-2 gap-2 w-full mx-auto mt-4 px-2">
-          {locations.map((location) => (
-            <div 
-              key={location.id} 
-              className={`py-2 px-3 rounded-md text-center border transition-colors ${
-                selectedLocation && selectedLocation.id === location.id 
-                  ? 'bg-[#324F35] text-white border-[#324F35]' 
-                  : 'border-gray-300 bg-white text-gray-800 hover:bg-gray-100'
-              }`}
-              onClick={() => {
-                if (selectedLocation && selectedLocation.id === location.id) {
-                  setSelectedLocation(null);
-                } else {
-                  // For mobile, we need to find the marker to calculate position
-                  const svgElement = svgContainerRef.current.querySelector("svg");
-                  if (svgElement) {
-                    const marker = svgElement.getElementById(location.id);
-                    if (marker) {
-                      const markerRect = marker.getBoundingClientRect();
-                      const containerRect = svgContainerRef.current.getBoundingClientRect();
-                      const relativeX = (markerRect.left + markerRect.width/2) - containerRect.left;
-                      const relativeY = (markerRect.top + markerRect.height/2) - containerRect.top;
-                      setTooltipPosition({ x: relativeX, y: relativeY });
-                    }
-                  }
-                  setSelectedLocation(location);
-                }
-              }}
-            >
-              {location.name}
-            </div>
-          ))}
-        </div>
-      )}
     </div>
   );
 };
