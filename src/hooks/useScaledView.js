@@ -1,84 +1,70 @@
 import { useState, useEffect } from 'react';
 
 /**
- * A custom hook that provides responsive scaling classes based on screen size
- * Works for both small screens and large high-resolution displays
+ * Custom hook to handle responsive scaling for different screen sizes and resolutions
+ * Adjusted with more conservative scaling factors for better text proportions
  */
-const useScaledView = () => {
-  const [screenSize, setScreenSize] = useState({
-    width: typeof window !== 'undefined' ? window.innerWidth : 0,
-    height: typeof window !== 'undefined' ? window.innerHeight : 0,
-    pixelRatio: typeof window !== 'undefined' ? window.devicePixelRatio : 1
-  });
-  
-  // Determine if we're on a high-res display that needs special scaling
-  const isHighResolution = screenSize.width > 1920 || (screenSize.width > 1440 && screenSize.pixelRatio > 1);
-  const isVeryHighResolution = screenSize.width > 2560 || (screenSize.width > 1920 && screenSize.pixelRatio > 1.5);
-  
-  // Update screen dimensions on resize
+function useScaledView() {
+  const [screenWidth, setScreenWidth] = useState(window.innerWidth);
+  const [pixelRatio, setPixelRatio] = useState(window.devicePixelRatio || 1);
+  const [isHighResolution, setIsHighResolution] = useState(false);
+  const [isVeryHighResolution, setIsVeryHighResolution] = useState(false);
+  const [containerClass, setContainerClass] = useState('');
+
   useEffect(() => {
-    const handleResize = () => {
-      setScreenSize({
-        width: window.innerWidth,
-        height: window.innerHeight,
-        pixelRatio: window.devicePixelRatio
-      });
+    // Function to update dimensions
+    const updateDimensions = () => {
+      const width = window.innerWidth;
+      const ratio = window.devicePixelRatio || 1;
+      
+      setScreenWidth(width);
+      setPixelRatio(ratio);
+      
+      // Define high-resolution breakpoints
+      const isHigh = 
+        (width >= 1920) || 
+        (width >= 1440 && ratio >= 1.5);
+      
+      const isVeryHigh = 
+        (width >= 2560) || 
+        (width >= 1920 && ratio >= 2);
+      
+      setIsHighResolution(isHigh);
+      setIsVeryHighResolution(isVeryHigh);
+      
+      // Set container width class based on resolution
+      if (isVeryHigh) {
+        setContainerClass('max-w-7xl'); // Larger container for very high-res
+      } else if (isHigh) {
+        setContainerClass('max-w-6xl'); // Large container for high-res
+      } else if (width >= 1280) {
+        setContainerClass('max-w-5xl'); // Default container for desktop
+      } else if (width >= 768) {
+        setContainerClass('max-w-4xl'); // Medium container for tablets
+      } else {
+        setContainerClass('w-full px-4'); // Full width with padding for mobile
+      }
     };
     
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    // Initial update
+    updateDimensions();
+    
+    // Add event listener
+    window.addEventListener('resize', updateDimensions);
+    
+    // Cleanup
+    return () => {
+      window.removeEventListener('resize', updateDimensions);
+    };
   }, []);
-  
-  // Determine appropriate container class based on screen size
-  let containerClass = 'max-w-7xl'; // Default container width
-  
-  if (isVeryHighResolution) {
-    containerClass = 'max-w-screen-2xl scale-container-large'; // Extra large screens (4K, etc)
-  } else if (isHighResolution) {
-    containerClass = 'max-w-screen-xl scale-container-medium'; // Large high-res screens
-  }
-  
-  // Text scaling classes
-  const getTextClass = (baseClass) => {
-    if (isVeryHighResolution) {
-      // Scale up text for very high resolution displays
-      switch (baseClass) {
-        case 'text-xs': return 'text-sm';
-        case 'text-sm': return 'text-base';
-        case 'text-base': return 'text-lg';
-        case 'text-lg': return 'text-xl';
-        case 'text-xl': return 'text-2xl';
-        case 'text-2xl': return 'text-3xl';
-        case 'text-3xl': return 'text-4xl';
-        case 'text-4xl': return 'text-5xl';
-        case 'text-5xl': return 'text-6xl';
-        default: return baseClass;
-      }
-    } else if (isHighResolution) {
-      // Mild scale up for high resolution displays
-      switch (baseClass) {
-        case 'text-xs': return 'text-sm';
-        case 'text-sm': return 'text-base';
-        case 'text-base': return 'text-lg';
-        case 'text-lg': return 'text-xl';
-        case 'text-xl': return 'text-2xl';
-        case 'text-2xl': return 'text-3xl';
-        case 'text-3xl': return 'text-4xl';
-        default: return baseClass;
-      }
-    }
-    return baseClass; // Default - no scaling
-  };
-  
+
   return {
     containerClass,
-    getTextClass,
     isHighResolution,
     isVeryHighResolution,
-    screenWidth: screenSize.width,
-    screenHeight: screenSize.height,
-    pixelRatio: screenSize.pixelRatio
+    screenWidth,
+    pixelRatio
   };
-};
+}
 
 export default useScaledView;

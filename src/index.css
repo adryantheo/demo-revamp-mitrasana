@@ -20,7 +20,7 @@
 /* Mobile devices */
 @media (max-width: 767px) {
   :root {
-    --font-scale: 0.8;
+    --font-scale: 0.85;
     --element-scale: 0.9;
     --container-width: 100%;
   }
@@ -48,7 +48,8 @@
 @media (min-width: 1920px), 
        (min-width: 1440px) and (min-resolution: 1.5dppx) {
   :root {
-    --font-scale: 1.15;
+    /* Reduced from 1.15 to 1.05 */
+    --font-scale: 1.05;
     --element-scale: 1.1;
     --container-width: 1600px;
   }
@@ -58,7 +59,8 @@
 @media (min-width: 2560px), 
        (min-width: 1920px) and (min-resolution: 2dppx) {
   :root {
-    --font-scale: 1.25;
+    /* Reduced from 1.25 to 1.1 */
+    --font-scale: 1.1;
     --element-scale: 1.2;
     --container-width: 1800px;
   }
@@ -69,7 +71,7 @@
   max-width: min(var(--container-width), 95vw);
 }
 
-/* Override Tailwind text classes with scaled versions */
+/* Override Tailwind text classes with scaled versions - adjusted for better readability */
 .text-xs { font-size: calc(0.75rem * var(--font-scale)); }
 .text-sm { font-size: calc(0.875rem * var(--font-scale)); }
 .text-base { font-size: calc(1rem * var(--font-scale)); }
@@ -83,6 +85,17 @@
 .text-7xl { font-size: calc(4.5rem * var(--font-scale)); }
 .text-8xl { font-size: calc(6rem * var(--font-scale)); }
 .text-9xl { font-size: calc(8rem * var(--font-scale)); }
+
+/* Additional adjustments for larger heading text sizes */
+@media (min-width: 1920px) {
+  /* Further reduce the larger heading sizes for better proportions */
+  .text-4xl { font-size: calc(2.1rem * var(--font-scale)); }
+  .text-5xl { font-size: calc(2.75rem * var(--font-scale)); }
+  .text-6xl { font-size: calc(3.4rem * var(--font-scale)); }
+  .text-7xl { font-size: calc(4.1rem * var(--font-scale)); }
+  .text-8xl { font-size: calc(5.5rem * var(--font-scale)); }
+  .text-9xl { font-size: calc(7.2rem * var(--font-scale)); }
+}
 
 /* Scale spacing utilities */
 .p-1, .px-1, .pl-1, .pr-1 { padding-left: calc(0.25rem * var(--element-scale)); padding-right: calc(0.25rem * var(--element-scale)); }
@@ -100,6 +113,23 @@
 .p-6, .py-6, .pt-6, .pb-6 { padding-top: calc(1.5rem * var(--element-scale)); padding-bottom: calc(1.5rem * var(--element-scale)); }
 .p-8, .py-8, .pt-8, .pb-8 { padding-top: calc(2rem * var(--element-scale)); padding-bottom: calc(2rem * var(--element-scale)); }
 .p-12, .py-12, .pt-12, .pb-12 { padding-top: calc(3rem * var(--element-scale)); padding-bottom: calc(3rem * var(--element-scale)); }
+
+/* Margin scaling for consistency */
+.m-1, .mx-1, .ml-1, .mr-1 { margin-left: calc(0.25rem * var(--element-scale)); margin-right: calc(0.25rem * var(--element-scale)); }
+.m-2, .mx-2, .ml-2, .mr-2 { margin-left: calc(0.5rem * var(--element-scale)); margin-right: calc(0.5rem * var(--element-scale)); }
+.m-3, .mx-3, .ml-3, .mr-3 { margin-left: calc(0.75rem * var(--element-scale)); margin-right: calc(0.75rem * var(--element-scale)); }
+.m-4, .mx-4, .ml-4, .mr-4 { margin-left: calc(1rem * var(--element-scale)); margin-right: calc(1rem * var(--element-scale)); }
+.m-6, .mx-6, .ml-6, .mr-6 { margin-left: calc(1.5rem * var(--element-scale)); margin-right: calc(1.5rem * var(--element-scale)); }
+.m-8, .mx-8, .ml-8, .mr-8 { margin-left: calc(2rem * var(--element-scale)); margin-right: calc(2rem * var(--element-scale)); }
+.m-12, .mx-12, .ml-12, .mr-12 { margin-left: calc(3rem * var(--element-scale)); margin-right: calc(3rem * var(--element-scale)); }
+
+.m-1, .my-1, .mt-1, .mb-1 { margin-top: calc(0.25rem * var(--element-scale)); margin-bottom: calc(0.25rem * var(--element-scale)); }
+.m-2, .my-2, .mt-2, .mb-2 { margin-top: calc(0.5rem * var(--element-scale)); margin-bottom: calc(0.5rem * var(--element-scale)); }
+.m-3, .my-3, .mt-3, .mb-3 { margin-top: calc(0.75rem * var(--element-scale)); margin-bottom: calc(0.75rem * var(--element-scale)); }
+.m-4, .my-4, .mt-4, .mb-4 { margin-top: calc(1rem * var(--element-scale)); margin-bottom: calc(1rem * var(--element-scale)); }
+.m-6, .my-6, .mt-6, .mb-6 { margin-top: calc(1.5rem * var(--element-scale)); margin-bottom: calc(1.5rem * var(--element-scale)); }
+.m-8, .my-8, .mt-8, .mb-8 { margin-top: calc(2rem * var(--element-scale)); margin-bottom: calc(2rem * var(--element-scale)); }
+.m-12, .my-12, .mt-12, .mb-12 { margin-top: calc(3rem * var(--element-scale)); margin-bottom: calc(3rem * var(--element-scale)); }
 
 /* Fix specific component scaling */
 .navbar-logo {

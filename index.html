@@ -20,15 +20,17 @@
         font-size: var(--base-font-size);
       }
       
-      /* High resolution display scaling */
+      /* High resolution display scaling - reduced scaling factors */
       @media (min-width: 1921px), 
              (min-width: 1441px) and (min-resolution: 1.5dppx) {
         :root {
-          --base-font-size: 18px;
+          /* Reduced from 18px to 17px */
+          --base-font-size: 17px;
         }
         
         body {
-          zoom: 1.1; /* Fallback for browsers that don't support CSS variables */
+          /* Reduced from 1.1 to 1.05 */
+          zoom: 1.05;
         }
       }
       
@@ -36,11 +38,13 @@
       @media (min-width: 2561px), 
              (min-width: 1921px) and (min-resolution: 2dppx) {
         :root {
-          --base-font-size: 20px;
+          /* Reduced from 20px to 18px */
+          --base-font-size: 18px;
         }
         
         body {
-          zoom: 1.2; /* Fallback for browsers that don't support CSS variables */
+          /* Reduced from 1.2 to 1.1 */
+          zoom: 1.1;
         }
       }
       
