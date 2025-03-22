@@ -10,7 +10,7 @@ const TentangKami = () => {
       <section className="relative flex justify-center">
         <div className="relative -h-[20%] sm:h-[65vh] md:h-160 bg-green-800 mb-10 sm:mb-16 md:mb-20 w-[92%] sm:w-[90%] md:w-full">
           <div className="pt-4 sm:pt-6 md:pt-10 flex flex-col items-center justify-center p-2 sm:p-4 md:p-6">
-            <div className='flex items-center justify-center md:pt-10'>
+            <div className='flex items-center justify-center md:pt-8'>
                 <img 
                 src={TentangKamiImage}
                 alt="tentang_kami" 
